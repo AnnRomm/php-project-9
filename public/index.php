@@ -3,12 +3,14 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
+use Slim\Views\PhpRenderer;
 
 $app = AppFactory::create();
-$app->addErrorMiddleware(true, true, true);
 
-$app->get('/', function ($request, $response) {
-    $response->write('Welcome to Slim!');
-    return $response;
+$view = new PhpRenderer(__DIR__ . '/../templates');
+
+$app->get('/', function ($request, $response, $args) use ($view) {
+    return $view->render($response, "home.php");
 });
+
 $app->run();
