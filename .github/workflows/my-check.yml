@@ -1,38 +1,35 @@
-name: my-check
+# Name of workflow
+name: PHP CI
 
+# Trigger the workflow on push or pull request
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
+  - push
+  - pull_request
 
 jobs:
+  # build – произвольно выбранное имя задания
+  # их может быть больше одного
   build:
-
+    # The type of machine to run the job on
     runs-on: ubuntu-latest
-
-    steps:
+    
+    steps: # список шагов, которые надо выполнить
+      # экшен — выполняет какую-то задачу
+      # checkout — клонирует репозиторий
+      # Check-out repository under GitHub workspace
+      # https://github.com/actions/checkout
       - uses: actions/checkout@v3
-
-      - name: Set up PHP
+        # Step's name
+      - name: Setup PHP
+          # Action gives to setup the PHP environment to test application
+        # https://github.com/shivammathur/setup-php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
-
+          # Specify the PHP version
+          php-version: '8.2'
       # Install project
-      - name: Install
+      - name: Install project
         run: make install
-      #Validate composer.json
-      - name: Install dependencies
-        run: make validate
-      # Run Linter
+      # Run linter
       - name: Run linter
         run: make lint
-      - name: Fix linter
-        run: make lint-fix
-      #Tests
-      - name: Run tests
-        run: make test

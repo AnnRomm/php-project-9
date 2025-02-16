@@ -3,8 +3,11 @@
     "description": "Анализатор страниц",
     "autoload": {
         "psr-4": {
-            "Hexlet\\Code\\": "src/"
-        }
+            "Hexlet\\Code\\": "app/"
+        },
+        "files": [
+            "app/database.php"
+        ]
     },
     "authors": [
         {
@@ -13,13 +16,22 @@
         }
     ],
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.11"
+        "squizlabs/php_codesniffer": "^3.11",
+        "phpstan/phpstan": "^2.1"
     },
     "require": {
         "slim/slim": "^4.14",
         "slim/psr7": "^1.7",
         "slim/http": "^1.4",
         "slim/php-view": "^3.4",
-        "php-di/php-di": "^7.0"
+        "php-di/php-di": "^7.0",
+        "ext-pdo": "*",
+        "slim/flash": "^0.4.0",
+        "vlucas/valitron": "^1.4",
+        "nesbot/carbon": "^3.8",
+        "vlucas/phpdotenv": "^5.6",
+        "guzzlehttp/guzzle": "^7.9",
+        "imangazaliev/didom": "^2.0",
+        "illuminate/support": "^11.41"
     }
 }
