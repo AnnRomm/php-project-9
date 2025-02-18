@@ -16,5 +16,4 @@ class UrlValidator
 
         return $validator->errors();
     }
-
 }

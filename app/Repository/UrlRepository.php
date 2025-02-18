@@ -45,7 +45,7 @@ class UrlRepository
         $stmt->execute([$id]);
         return $stmt->fetchAll();
     }
-    
+
     public function findByName(string $url): ?int
     {
         $query = 'SELECT id FROM urls WHERE name = ?';
