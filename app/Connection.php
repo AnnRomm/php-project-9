@@ -22,14 +22,12 @@ final class Connection
         $password = $databaseParams['pass'] ?? '';
         $dbName = ltrim($databaseParams['path'] ?? '', '/');
 
-        $dsn = sprintf(
-            "pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s",
-            $host,
-            $port,
-            $dbName,
-            $user,
-            $password
-        );
+        $dsn = "pgsql:
+        host={$host};
+        port={$port};
+        dbname={$dbName};
+        user={$user};
+        password={$password}";
 
         $pdo = new PDO($dsn);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

@@ -33,14 +33,14 @@
                 <th>description</th>
                 <th>Дата создания</th>
             </tr>
-            <?php foreach ($urlChecks as $check) : ?>
+            <?php foreach ($urlChecks as $checks) : ?>
                 <tr>
-                    <td><?= $check['id'] ?></td>
-                    <td><?= $check['status_code'] ?></td>
-                    <td><?= htmlspecialchars($check['h1'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($check['title'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($check['description'] ?? '') ?></td>
-                    <td><?= $check['created_at'] ?></td>
+                    <td><?= $checks['id'] ?></td>
+                    <td><?= $checks['status_code'] ?></td>
+                    <td><?= htmlspecialchars($checks['h1'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($checks['title'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($checks['description'] ?? '') ?></td>
+                    <td><?= $checks['created_at'] ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
