@@ -2,37 +2,33 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Slim\Factory\AppFactory;
-use Slim\Middleware\MethodOverrideMiddleware;
-use Slim\Views\PhpRenderer;
-use Slim\Flash\Messages;
 use DI\Container;
 use Dotenv\Dotenv;
-use Hexlet\Code\UrlRepository;
-use Hexlet\Code\UrlCheckRepository;
-use Hexlet\Code\UrlValidator;
+use Hexlet\Code\Connection;
 use Hexlet\Code\HttpClient;
-use function App\Database\getConnection;
+use Hexlet\Code\Migrations;
+use Hexlet\Code\Repository\UrlCheckRepository;
+use Hexlet\Code\Repository\UrlRepository;
+use Hexlet\Code\UrlValidator;
+use Slim\Factory\AppFactory;
+use Slim\Flash\Messages;
+use Slim\Middleware\MethodOverrideMiddleware;
+use Slim\Views\PhpRenderer;
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->safeLoad();
+$dotenv->required(['DATABASE_URL'])->notEmpty();
+
+$conn = Connection::create($_ENV['DATABASE_URL']);
+(new Migrations())->run($conn);
 
 session_start();
 
 $container = new Container();
 $app = AppFactory::createFromContainer($container);
 
+$container->set('pdo', fn() => $conn);
 $container->set('flash', new Messages());
-
-$container->set('pdo', function () {
-    $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-    $dotenv->safeLoad();
-
-    $databaseUrl = parse_url($_ENV['DATABASE_URL']);
-    if (!$databaseUrl) {
-        throw new \Exception('Ошибочный запрос к конфигурации базы данных');
-    }
-
-    return getConnection($databaseUrl);
-});
-
 $container->set('router', $app->getRouteCollector()->getRouteParser());
 $container->set('renderer', function () use ($container) {
     $phpView = new PhpRenderer(__DIR__ . '/../templates');
@@ -75,10 +71,6 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
     $id = (int)$args['id'];
 
     $url = $repo->getUrlById($id);
-    if (!$url) {
-        return $this->get('renderer')->render($response, 'errors/404.phtml', ['activeMenu' => '']);
-    }
-
     $urlChecks = $repo->getUrlChecksByUrlId($id);
 
     $params = [
@@ -113,17 +105,23 @@ $app->post('/urls', function ($request, $response) {
             'activeMenu' => 'main'
         ]);
     }
-    $normalizedUrl = UrlValidator::normalize($inputtedUrl);
+    $inputtedUrl = mb_strtolower($inputtedUrlData['name']);
+    $parsedUrl = parse_url($inputtedUrl);
+    $scheme = $parsedUrl['scheme'];
+    $host = $parsedUrl['host'];
+    $url = "{$scheme}://{$host}";
 
     $pdo = $this->get('pdo');
+    $currentTime = date("Y-m-d H:i:s");
+
     $urlRepository = new UrlRepository($pdo);
+    $urlExists = $urlRepository->findByName($url);
 
-    $id = $urlRepository->findByName($normalizedUrl);
-
-    if ($id) {
+    if ($urlExists) {
         $this->get('flash')->addMessage('success', 'Страница уже существует');
+        $id = $urlExists;
     } else {
-        $urlRepository->create($normalizedUrl);
+        $id = $urlRepository->insertNewUrl($url, $currentTime);
         $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
     }
 

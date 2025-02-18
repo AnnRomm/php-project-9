@@ -4,10 +4,7 @@
     "autoload": {
         "psr-4": {
             "Hexlet\\Code\\": "app/"
-        },
-        "files": [
-            "app/database.php"
-        ]
+        }
     },
     "authors": [
         {

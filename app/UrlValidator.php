@@ -17,13 +17,4 @@ class UrlValidator
         return $validator->errors();
     }
 
-    public static function normalize(string $url): ?string
-    {
-        $parsedUrl = parse_url($url);
-        if (!isset($parsedUrl['scheme'], $parsedUrl['host'])) {
-            return null; // Некорректный URL
-        }
-
-        return "{$parsedUrl['scheme']}://{$parsedUrl['host']}";
-    }
 }

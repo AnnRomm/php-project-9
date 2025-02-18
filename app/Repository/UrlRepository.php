@@ -1,6 +1,6 @@
 <?php
 
-namespace Hexlet\Code;
+namespace Hexlet\Code\Repository;
 
 use PDO;
 
@@ -45,8 +45,7 @@ class UrlRepository
         $stmt->execute([$id]);
         return $stmt->fetchAll();
     }
-
-    // Проверяет, существует ли URL в базе
+    
     public function findByName(string $url): ?int
     {
         $query = 'SELECT id FROM urls WHERE name = ?';
@@ -54,13 +53,12 @@ class UrlRepository
         $stmt->execute([$url]);
         return $stmt->fetchColumn() ?: null;
     }
-
-    // Добавляет новый URL в базу
-    public function create(string $url): int
+    public function insertNewUrl(string $url, string $currentTime): int
     {
         $query = 'INSERT INTO urls (name, created_at) VALUES (?, ?)';
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$url, date("Y-m-d H:i:s")]);
-        return (int)$this->pdo->lastInsertId();
+        $stmt->execute([$url, $currentTime]);
+
+        return $this->pdo->lastInsertId();
     }
 }
