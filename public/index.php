@@ -20,7 +20,6 @@ $dotenv->safeLoad();
 $dotenv->required(['DATABASE_URL'])->notEmpty();
 
 $conn = Connection::create($_ENV['DATABASE_URL']);
-(new Migrations())->run($conn);
 
 session_start();
 

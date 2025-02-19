@@ -29,9 +29,12 @@ final class Connection
         user={$user};
         password={$password}";
 
-        $pdo = new PDO($dsn);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        return $pdo;
+        try {
+            $pdo = new \PDO($dsn);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $pdo;
+        } catch (\PDOException $e) {
+            throw new \PDOException("Ошибка подключения к базе данных: " . $e->getMessage());
+        }
     }
 }
