@@ -27,7 +27,7 @@ class UrlChecker
             $h1 = $document->first('h1')?->text();
             $title = $document->first('title')?->text();
             $description = $document->first('meta[name=description]')?->getAttribute('content');
-            
+
             return [
                 'status' => 'success',
                 'statusCode' => $statusCode,
