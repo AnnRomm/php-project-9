@@ -24,8 +24,8 @@ class UrlChecker
             $body = $response->getBody();
             $document = new Document((string)$body);
 
-            $h1 = $document->first('h1')?->text();
-            $title = $document->first('title')?->text();
+            $h1 = optional($document->first('h1'))->text();
+            $title = optional($document->first('title'))->text();
             $description = $document->first('meta[name=description]')?->getAttribute('content');
 
             return [
