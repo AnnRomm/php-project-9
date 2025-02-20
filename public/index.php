@@ -6,7 +6,6 @@ use DI\Container;
 use Dotenv\Dotenv;
 use Hexlet\Code\Connection;
 use Hexlet\Code\HttpClient;
-use Hexlet\Code\Migrations;
 use Hexlet\Code\Repository\UrlCheckRepository;
 use Hexlet\Code\Repository\UrlRepository;
 use Hexlet\Code\UrlValidator;
@@ -14,6 +13,7 @@ use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
 use Slim\Middleware\MethodOverrideMiddleware;
 use Slim\Views\PhpRenderer;
+use Slim\Exception\HttpNotFoundException;
 
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
@@ -71,6 +71,10 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
 
     $url = $repo->getUrlById($id);
     $urlChecks = $repo->getUrlChecksByUrlId($id);
+
+    if ($url === null) {
+        throw new HttpNotFoundException($request);
+    }
 
     $params = [
         'url' => [
@@ -133,6 +137,9 @@ $app->post('/urls/{id:[0-9]+}/checks', function ($request, $response, $args) {
 
     $urlRepository = new UrlRepository($this->get('pdo'));
     $urlData = $urlRepository->getUrlById($id);
+    if ($urlData === null) {
+        throw new HttpNotFoundException($request);
+    }
     $url = $urlData['name'];
 
     $httpClient = new HttpClient();

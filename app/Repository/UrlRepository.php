@@ -6,7 +6,7 @@ use PDO;
 
 class UrlRepository
 {
-    private $pdo;
+    private PDO $pdo;
 
     public function __construct(PDO $pdo)
     {
@@ -34,7 +34,7 @@ class UrlRepository
         $query = 'SELECT * FROM urls WHERE id = ?';
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([$id]);
-        return $stmt->fetch() ?: null;
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
     // Получение проверок URL по ID

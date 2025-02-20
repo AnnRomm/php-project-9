@@ -24,12 +24,16 @@ class HttpClient
             $body = $response->getBody();
             $document = new Document((string)$body);
 
+            $h1Element = $document->first('h1');
+            $titleElement = $document->first('title');
+            $metaDescription = $document->first('meta[name=description]');
+
             return [
                 'status' => 'success',
                 'statusCode' => $statusCode,
-                'h1' => optional($document->first('h1'))->text() ?: '',
-                'title' => optional($document->first('title'))->text() ?: '',
-                'description' => optional($document->first('meta[name=description]'))->content ?: ''
+                'h1' => $h1Element ? $h1Element->text() : '',
+                'title' => $titleElement ? $titleElement->text() : '',
+                'description' => $metaDescription ? $metaDescription->getAttribute('content') : ''
             ];
         } catch (RequestException $e) {
             $response = $e->getResponse();
