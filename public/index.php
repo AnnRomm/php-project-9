@@ -5,7 +5,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use DI\Container;
 use Dotenv\Dotenv;
 use Hexlet\Code\Connection;
-use Hexlet\Code\HttpClient;
+use Hexlet\Code\UrlChecker;
 use Hexlet\Code\Repository\UrlCheckRepository;
 use Hexlet\Code\Repository\UrlRepository;
 use Hexlet\Code\UrlValidator;
@@ -142,7 +142,7 @@ $app->post('/urls/{id:[0-9]+}/checks', function ($request, $response, $args) {
     }
     $url = $urlData['name'];
 
-    $httpClient = new HttpClient();
+    $httpClient = new UrlChecker();
     $result = $httpClient->checkUrl($url);
 
     if ($result['status'] === 'error') {

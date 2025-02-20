@@ -7,7 +7,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
 use DiDom\Document;
 
-class HttpClient
+class UrlChecker
 {
     private Client $client;
 
@@ -24,16 +24,16 @@ class HttpClient
             $body = $response->getBody();
             $document = new Document((string)$body);
 
-            $h1Element = $document->first('h1');
-            $titleElement = $document->first('title');
-            $metaDescription = $document->first('meta[name=description]');
-
+            $h1 = $document->first('h1')?->text();
+            $title = $document->first('title')?->text();
+            $description = $document->first('meta[name=description]')?->getAttribute('content');
+            
             return [
                 'status' => 'success',
                 'statusCode' => $statusCode,
-                'h1' => $h1Element ? $h1Element->text() : '',
-                'title' => $titleElement ? $titleElement->text() : '',
-                'description' => $metaDescription ? $metaDescription->getAttribute('content') : ''
+                'h1' => $h1,
+                'title' => $title,
+                'description' => $description,
             ];
         } catch (RequestException $e) {
             $response = $e->getResponse();
